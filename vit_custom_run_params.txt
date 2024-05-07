@@ -1,0 +1,6 @@
+Total Training Time:  478.4917541999894
+Training Acc    0.9913323
+Validation Acc  0.97910726
+------------------------------------
+Training error    0.027725011
+Validation error 0.08959036
