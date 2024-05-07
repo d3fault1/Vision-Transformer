@@ -323,7 +323,7 @@ def plot_accs(plot_iters, test_acc):
     mp.plot(plot_iters_smooth, test_acc_smooth)
     fig = mp.gcf()
     fig.set_size_inches(10, 10)
-    fig.savefig('./myrun/vit/cifar10/vit_accuracy')
+    fig.savefig('./myrun/vit/mnist/vit_accuracy')
     return
 
 def parse_dataset(config, dataset):
@@ -477,7 +477,7 @@ def main_function():
 
     config = {}
     config['batch_size'] = 64
-    config['patch_size'] = 8
+    config['patch_size'] = 7
     config['num_heads'] = 12
     config['transformer_layers'] = 8
     config['projection_dim'] = 128
@@ -488,35 +488,36 @@ def main_function():
     config['norm_epsilon'] = 1e-6
     config['patch_padding'] = 'VALID'
 
-    tr_dataset, val_dataset = parse_dataset(config=config, dataset='cifar10')
+    tr_dataset, val_dataset = parse_dataset(config=config, dataset='mnist')
     model = model_compile(config=config)
 
-    model.build(input_shape=(None, 32, 32, 3))
+    model.build(input_shape=(None, 28, 28, 1))
 
     # model.load_weights('./myrun/vit/' + 'vit_custom_model').expect_partial()
-    model_fit(train_dataset=tr_dataset, validation_dataset=val_dataset, vit_model=model, epochs=25, plot_freqs=100, save_path='./myrun/vit/cifar10/')
+    model_fit(train_dataset=tr_dataset, validation_dataset=val_dataset, vit_model=model, epochs=10, plot_freqs=100, save_path='./myrun/vit/mnist/')
     # model.save_weights('vit_custom_mnist_smaller.h5')
     
     # model.build(input_shape=(None, 32, 32, 3))
     # model.load_weights('vit_custom_mnist.h5')
 
-    model_test(val_dataset, model)
+    # model_test(val_dataset, model)
     # model_predict(val_dataset, model)
 
     # Print Attention Matrix
+    exit()
     
-    # val_enum = iter(val_dataset)
-    # for i in range(5):
-    #     (x, y) = next(val_enum)
-    #     model.trainable = False
-    #     y_pred = model(x, training=False)
+    val_enum = iter(val_dataset)
+    for i in range(5):
+        (x, y) = next(val_enum)
+        model.trainable = False
+        y_pred = model(x, training=False)
         
-    #     # tf.print(tf.argmax(y_pred, axis=1))
+        # tf.print(tf.argmax(y_pred, axis=1))
 
         mp.imshow(x[0])
         mp.gcf().set_size_inches(10, 10)
-        mp.gcf().savefig('attention_matrices2\\batch_{}_input_image.png'.format(i))
-    #     mhas = model.get_attention_matrix()
+        mp.gcf().savefig('attention_matrices3\\batch_{}_input_image.png'.format(i))
+        mhas = model.get_attention_matrix()
     #     # mhas_tensor = tf.stack(mhas, axis=1)
     #     # head_reduced = tf.reduce_mean(mhas_tensor, axis=2)
     #     # layer_summed = tf.reduce_sum(head_reduced, axis=1)
